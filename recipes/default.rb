@@ -39,25 +39,12 @@ node['ssh_keys']['users'].each do |user, config|
   end
 
   unless config['authorized_keys'].nil? || config['authorized_keys'].empty?
-    file "#{home}/.ssh/authorized_keys" do
+    template "#{home}/.ssh/authorized_keys" do
+      source 'authorized_keys.erb'
       owner user
       group user
       mode '0600'
-      action :create_if_missing
-    end
-
-    config['authorized_keys'].each_with_index do |key, index|
-      ruby_block "#{user}_authorized_keys_#{index}" do
-        block do
-          authorized_keys = File.read("#{home}/.ssh/authorized_keys").split("\n")
-
-          unless authorized_keys.include?(key)
-            File.open("#{home}/.ssh/authorized_keys", 'a') do |file|
-              file << key
-            end
-          end
-        end
-      end
+      variables keys: config['authorized_keys']
     end
   end
 end

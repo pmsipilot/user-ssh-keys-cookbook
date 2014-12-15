@@ -189,26 +189,6 @@ describe 'ssh-keys::default' do
 
   describe 'Add authorized keys' do
     describe 'With one user' do
-      it 'Should create authorized_keys file if it does not exist' do
-        allow(Dir).to receive(:home) { '/home/bob' }
-        stub_command('test -e /home/bob/.ssh').and_return(false)
-        stub_data_bag(:ssh_keys).and_return({})
-
-        chef_run = ChefSpec::SoloRunner.new do |node|
-          node.set['ssh_keys'] = {
-              :users => {
-                  :bob => {
-                      :authorized_keys => [
-                          'foobar'
-                      ]
-                  }
-              }
-          }
-        end
-
-        expect(chef_run.converge(described_recipe)).to create_file_if_missing('/home/bob/.ssh/authorized_keys')
-      end
-
       it 'Should add authorized key' do
         allow(Dir).to receive(:home) { '/home/bob' }
         stub_command('test -e /home/bob/.ssh').and_return(false)
@@ -226,7 +206,7 @@ describe 'ssh-keys::default' do
           }
         end
 
-        expect(chef_run.converge(described_recipe)).to run_ruby_block('bob_authorized_keys_0')
+        expect(chef_run.converge(described_recipe)).to render_file('/home/bob/.ssh/authorized_keys').with_content('foobar')
       end
     end
   end

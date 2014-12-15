@@ -49,7 +49,7 @@ Include `ssh-keys` in your node's `run_list`:
 #### Example databag
 
 ```json
-{
+{    
     "bob": [
         {
             "id": "my_key",
