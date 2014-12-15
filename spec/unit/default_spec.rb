@@ -96,11 +96,13 @@ describe 'ssh-keys::default' do
           allow(Dir).to receive(:home) { '/home/bob' }
           stub_command('test -e /home/bob/.ssh').and_return(false)
           stub_data_bag(:ssh_keys).and_return({
-            :bob => [{
-              :id => 'the_key',
-              :pub => 'the_public_key',
-              :priv => 'the_private_key'
-            }]
+            :bob => [
+              {
+                :id => 'the_key',
+                :pub => 'the_public_key',
+                :priv => 'the_private_key'
+              }
+            ]
           })
 
           chef_run = ChefSpec::SoloRunner.new do |node|
