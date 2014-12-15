@@ -1,0 +1,7 @@
+DEPENDENCIES
+  ssh-keys
+    path: .
+    metadata: true
+
+GRAPH
+  ssh-keys (0.1.0)
