@@ -38,13 +38,26 @@ node['ssh_keys']['users'].each do |user, config|
     end
   end
 
-  unless config['authorized_keys'].nil? || config['authorized_keys'].empty?
+  authorized_keys = config['authorized_keys']
+  authorized_keys ||= []
+
+  unless config['authorized_users'].nil? || config['authorized_users'].empty?
+    config['authorized_users'].each do |authorized_user|
+      raise Chef::Exceptions::ConfigurationError, "User #{authorized_user} does not exist" if databag[authorized_user].nil?
+
+      databag[authorized_user].each do |authorized_user_key|
+        authorized_keys << authorized_user_key['pub']
+      end
+    end
+  end
+
+  unless authorized_keys.empty?
     template "#{home}/.ssh/authorized_keys" do
       source 'authorized_keys.erb'
       owner user
       group user
       mode '0600'
-      variables keys: config['authorized_keys']
+      variables keys: authorized_keys
     end
   end
 end
