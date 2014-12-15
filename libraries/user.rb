@@ -3,9 +3,9 @@ require 'chef/data_bag'
 module PMSIpilot
   module SshKeys
     module User
-      def self.valid?(name, user)
+      def self.valid?(username, user)
         begin
-          Dir.home(name)
+          Dir.home(username)
         rescue
           raise Chef::Exceptions::ConfigurationError, "User #{user} does not exist"
         end
@@ -24,20 +24,20 @@ module PMSIpilot
         )
       end
 
-      def self.raise_if_invalid!(name, user)
-        raise Chef::Exceptions::ConfigurationError, 'Invalid user configuration' unless valid?(name, user)
+      def self.raise_if_invalid!(username, user)
+        raise Chef::Exceptions::ConfigurationError, 'Invalid user configuration' unless valid?(username, user)
 
         user
       end
 
-      def self.normalize!(name, user, node, data_bag_proc)
-        normalized = raise_if_invalid!(name, user).dup
+      def self.normalize!(username, user, node, data_bag_proc)
+        normalized = raise_if_invalid!(username, user).dup
 
         databag = data_bag_proc.call(node['ssh_keys']['databag'])
 
-        normalized['databag'] = databag[name]
+        normalized['databag'] = databag[username]
         normalized['databag'] ||= []
-        normalized['home'] = Dir.home(name)
+        normalized['home'] = Dir.home(username)
         normalized['authorized_keys'] ||= []
         normalized['authorized_users'] ||= []
         normalized['keys'] = []
