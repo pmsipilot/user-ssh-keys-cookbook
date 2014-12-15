@@ -18,7 +18,6 @@ Deploys SSH keys
 
 | Key                 | Type       | Default    | Description                                                           |
 | :------------------ |:---------- | :--------- | :-------------------------------------------------------------------- |
-| `databag`           | String     | `ssh_keys` | Databag where to search for keys                                      |
 | `authorized_keys`   | Array      | `[]`       | Array of strings representing authorized SSH public keys              |
 | `authorized_users`  | Array      | `[]`       | Array of strings representing authorized users (found in the databag) |
 

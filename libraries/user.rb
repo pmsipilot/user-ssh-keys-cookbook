@@ -42,7 +42,6 @@ module PMSIpilot
         normalized['authorized_users'] ||= []
         normalized['keys'] = []
 
-
         normalized['databag'].each do |key|
           normalized['keys'] << PMSIpilot::SshKeys::Key.normalize!(key)
         end
