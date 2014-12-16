@@ -1,43 +1,13 @@
 require 'spec_helper'
 
 describe 'ssh-keys::default' do
-  describe 'With empty attribute' do
-    it 'Throws a ConfigurationError with missing attributes' do
-      chef_run = ChefSpec::SoloRunner.new do |node|
-        node.set['ssh_keys'] = nil
-      end
-
-      expect { chef_run.converge(described_recipe) }.to raise_error(Chef::Exceptions::ConfigurationError)
-    end
-
-    it 'Throws a ConfigurationError with empty attributes' do
-      chef_run = ChefSpec::SoloRunner.new do |node|
-        node.set['ssh_keys'] = {}
-      end
-
-      expect { chef_run.converge(described_recipe) }.to raise_error(Chef::Exceptions::ConfigurationError)
-    end
-  end
-
   describe 'Deploys SSH keys' do
     describe 'With one user'  do
-      it 'Throws a ConfigurationError with empty user attributes' do
-        chef_run = ChefSpec::SoloRunner.new do |node|
-          node.set['ssh_keys'] = {
-            :bob => {}
-          }
-        end
-
-        expect { chef_run.converge(described_recipe) }.to raise_error(Chef::Exceptions::ConfigurationError)
-      end
-
       it 'Throws a ConfigurationError if user does not exist' do
-        chef_run = ChefSpec::SoloRunner.new do |node|
+        chef_run = ChefSpec::SoloRunner.new(step_into: ['ssh_keys_key']) do |node|
           node.set['ssh_keys'] = {
             :users => {
-              :bob => {
-                :authorized_keys => %w(foobar)
-              }
+              :bob => {}
             }
           }
         end
@@ -53,14 +23,10 @@ describe 'ssh-keys::default' do
           :keys => []
         })
 
-        chef_run = ChefSpec::SoloRunner.new do |node|
+        chef_run = ChefSpec::SoloRunner.new(step_into: ['ssh_keys_key']) do |node|
           node.set['ssh_keys'] = {
             :users => {
-              :bob => {
-                :authorized_keys => [
-                  'foobar'
-                ]
-              }
+              :bob => {}
             }
           }
         end
@@ -80,14 +46,10 @@ describe 'ssh-keys::default' do
           :keys => []
         })
 
-        chef_run = ChefSpec::SoloRunner.new do |node|
+        chef_run = ChefSpec::SoloRunner.new(step_into: ['ssh_keys_key']) do |node|
           node.set['ssh_keys'] = {
             :users => {
-              :bob => {
-                :authorized_keys => [
-                  'foobar'
-                ]
-              }
+              :bob => {}
             }
           }
         end
@@ -110,12 +72,10 @@ describe 'ssh-keys::default' do
             ]
           })
 
-          chef_run = ChefSpec::SoloRunner.new do |node|
+          chef_run = ChefSpec::SoloRunner.new(step_into: ['ssh_keys_key']) do |node|
             node.set['ssh_keys'] = {
               :users => {
-                :bob => {
-                    :databag => 'ssh_keys'
-                }
+                :bob => {}
               }
             }
           end
@@ -155,12 +115,10 @@ describe 'ssh-keys::default' do
             ]
           })
 
-          chef_run = ChefSpec::SoloRunner.new do |node|
+          chef_run = ChefSpec::SoloRunner.new(step_into: ['ssh_keys_key']) do |node|
             node.set['ssh_keys'] = {
               :users => {
-                :bob => {
-                    :databag => 'ssh_keys'
-                }
+                :bob => {}
               }
             }
           end
@@ -195,19 +153,8 @@ describe 'ssh-keys::default' do
     end
 
     describe 'With multiple users' do
-      it 'Throws a ConfigurationError with empty user attributes' do
-        chef_run = ChefSpec::SoloRunner.new do |node|
-          node.set['ssh_keys'] = {
-            :bob => {},
-            :joe => {}
-          }
-        end
-
-        expect { chef_run.converge(described_recipe) }.to raise_error(Chef::Exceptions::ConfigurationError)
-      end
-
       it 'Throws a ConfigurationError if user does not exist' do
-        chef_run = ChefSpec::SoloRunner.new do |node|
+        chef_run = ChefSpec::SoloRunner.new(step_into: ['ssh_keys_key']) do |node|
           node.set['ssh_keys'] = {
             :users => {
               :bob => {
@@ -235,13 +182,11 @@ describe 'ssh-keys::default' do
           :keys => []
         })
 
-        chef_run = ChefSpec::SoloRunner.new do |node|
+        chef_run = ChefSpec::SoloRunner.new(step_into: ['ssh_keys_key']) do |node|
           node.set['ssh_keys'] = {
             :users => {
               :bob => {
-                :authorized_keys => [
-                  'foobar'
-                ]
+                :authorized_keys => %w(foobar)
               }
             }
           }
@@ -255,13 +200,11 @@ describe 'ssh-keys::default' do
   describe 'Add authorized users' do
     describe 'With one user' do
       it 'Throws a ConfigurationError if user does not exist in databag' do
-        chef_run = ChefSpec::SoloRunner.new do |node|
+        chef_run = ChefSpec::SoloRunner.new(step_into: ['ssh_keys_key']) do |node|
           node.set['ssh_keys'] = {
             :users => {
               :bob => {
-                :authorized_users => [
-                  'joe'
-                ]
+                :authorized_users => %w(joe)
               }
             }
           }
@@ -271,10 +214,10 @@ describe 'ssh-keys::default' do
       end
 
       it 'Should add authorized user\'s key' do
-        allow(Dir).to receive(:home) { '/home/bob' }
+        allow(Dir).to receive(:home).with('bob') { '/home/bob' }
         stub_command('test -e /home/bob/.ssh').and_return(false)
-        allow(Dir).to receive(:home) { '/home/bob' }
-        stub_command('test -e /home/bob/.ssh').and_return(false)
+        allow(Dir).to receive(:home).with('joe') { '/home/joe' }
+        stub_command('test -e /home/joe/.ssh').and_return(false)
         stub_data_bag_item(:ssh_keys, 'bob').and_return({
           :id => 'bob',
           :keys => [
@@ -296,13 +239,11 @@ describe 'ssh-keys::default' do
           ]
         })
 
-        chef_run = ChefSpec::SoloRunner.new do |node|
+        chef_run = ChefSpec::SoloRunner.new(step_into: ['ssh_keys_key']) do |node|
           node.set['ssh_keys'] = {
             :users => {
               :bob => {
-                :authorized_users => [
-                  'joe'
-                ]
+                :authorized_users => %w(joe)
               }
             }
           }
@@ -342,7 +283,7 @@ describe 'ssh-keys::default' do
           ]
         })
 
-        chef_run = ChefSpec::SoloRunner.new do |node|
+        chef_run = ChefSpec::SoloRunner.new(step_into: ['ssh_keys_key']) do |node|
           node.set['ssh_keys'] = {
             :users => {
               :bob => {

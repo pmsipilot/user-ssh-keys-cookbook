@@ -11,7 +11,7 @@ Deploys SSH keys
 
 | Key         | Type       | Default    | Description                                           |
 | :---------- |:---------- | :--------- | :---------------------------------------------------- |
-| `databag`   | String     | `ssh_keys` | Databag where to search for keys                      |
+| `data_bag`  | String     | `ssh_keys` | Databag where to search for keys                      |
 | `users`     | Hash       | `{}`       | A list of users with names as key                     |
 
 ### Users
