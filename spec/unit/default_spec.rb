@@ -20,8 +20,8 @@ describe 'ssh-keys::default' do
   end
 
   describe 'Deploys SSH keys' do
-    describe 'With one user' do
-      it 'Throws a ConfigurationError with missing attributes' do
+    describe 'With one user'  do
+      it 'Throws a ConfigurationError with empty user attributes' do
         chef_run = ChefSpec::SoloRunner.new do |node|
           node.set['ssh_keys'] = {
             :bob => {}
@@ -36,9 +36,7 @@ describe 'ssh-keys::default' do
           node.set['ssh_keys'] = {
             :users => {
               :bob => {
-                :authorized_keys => [
-                  'foobar'
-                ]
+                :authorized_keys => %w(foobar)
               }
             }
           }
@@ -50,7 +48,10 @@ describe 'ssh-keys::default' do
       it 'Should create .ssh directory if it does not exist' do
         allow(Dir).to receive(:home) { '/home/bob' }
         stub_command('test -e /home/bob/.ssh').and_return(false)
-        stub_data_bag(:ssh_keys).and_return({})
+        stub_data_bag_item(:ssh_keys, 'bob').and_return({
+          :id => 'bob',
+          :keys => []
+        })
 
         chef_run = ChefSpec::SoloRunner.new do |node|
           node.set['ssh_keys'] = {
@@ -74,7 +75,10 @@ describe 'ssh-keys::default' do
       it 'Should not create .ssh directory if it exists' do
         allow(Dir).to receive(:home) { '/home/bob' }
         stub_command('test -e /home/bob/.ssh').and_return(true)
-        stub_data_bag(:ssh_keys).and_return({})
+        stub_data_bag_item(:ssh_keys, 'bob').and_return({
+          :id => 'bob',
+          :keys => []
+        })
 
         chef_run = ChefSpec::SoloRunner.new do |node|
           node.set['ssh_keys'] = {
@@ -95,8 +99,9 @@ describe 'ssh-keys::default' do
         it 'Should deploy user\'s SSH key' do
           allow(Dir).to receive(:home) { '/home/bob' }
           stub_command('test -e /home/bob/.ssh').and_return(false)
-          stub_data_bag(:ssh_keys).and_return({
-            :bob => [
+          stub_data_bag_item(:ssh_keys, 'bob').and_return({
+            :id => 'bob',
+            :keys => [
               {
                 :id => 'the_key',
                 :pub => 'the_public_key',
@@ -134,8 +139,9 @@ describe 'ssh-keys::default' do
         it 'Should deploy user\'s SSH keys' do
           allow(Dir).to receive(:home) { '/home/bob' }
           stub_command('test -e /home/bob/.ssh').and_return(false)
-          stub_data_bag(:ssh_keys).and_return({
-            :bob => [
+          stub_data_bag_item(:ssh_keys, 'bob').and_return({
+            :id => 'bob',
+            :keys => [
               {
                 :id => 'the_key',
                 :pub => 'the_public_key',
@@ -187,6 +193,36 @@ describe 'ssh-keys::default' do
         end
       end
     end
+
+    describe 'With multiple users' do
+      it 'Throws a ConfigurationError with empty user attributes' do
+        chef_run = ChefSpec::SoloRunner.new do |node|
+          node.set['ssh_keys'] = {
+            :bob => {},
+            :joe => {}
+          }
+        end
+
+        expect { chef_run.converge(described_recipe) }.to raise_error(Chef::Exceptions::ConfigurationError)
+      end
+
+      it 'Throws a ConfigurationError if user does not exist' do
+        chef_run = ChefSpec::SoloRunner.new do |node|
+          node.set['ssh_keys'] = {
+            :users => {
+              :bob => {
+                :authorized_keys => %w(foobar)
+              },
+              :joe => {
+                  :authorized_keys => %w(bazquxx)
+              }
+            }
+          }
+        end
+
+        expect { chef_run.converge(described_recipe) }.to raise_error(Chef::Exceptions::ConfigurationError)
+      end
+    end
   end
 
   describe 'Add authorized keys' do
@@ -194,7 +230,10 @@ describe 'ssh-keys::default' do
       it 'Should add authorized key' do
         allow(Dir).to receive(:home) { '/home/bob' }
         stub_command('test -e /home/bob/.ssh').and_return(false)
-        stub_data_bag(:ssh_keys).and_return({})
+        stub_data_bag_item(:ssh_keys, 'bob').and_return({
+          :id => 'bob',
+          :keys => []
+        })
 
         chef_run = ChefSpec::SoloRunner.new do |node|
           node.set['ssh_keys'] = {
@@ -236,15 +275,19 @@ describe 'ssh-keys::default' do
         stub_command('test -e /home/bob/.ssh').and_return(false)
         allow(Dir).to receive(:home) { '/home/bob' }
         stub_command('test -e /home/bob/.ssh').and_return(false)
-        stub_data_bag(:ssh_keys).and_return({
-          :bob => [
+        stub_data_bag_item(:ssh_keys, 'bob').and_return({
+          :id => 'bob',
+          :keys => [
             {
               :id => 'bob_key',
               :pub => 'bob_public_key',
               :priv => 'bob_private_key'
             }
-          ],
-          :joe => [
+          ]
+        })
+        stub_data_bag_item(:ssh_keys, 'joe').and_return({
+          :id => 'joe',
+          :keys => [
             {
               :id => 'job_key',
               :pub => 'joe_public_key',
@@ -273,15 +316,19 @@ describe 'ssh-keys::default' do
         stub_command('test -e /home/bob/.ssh').and_return(false)
         allow(Dir).to receive(:home) { '/home/bob' }
         stub_command('test -e /home/bob/.ssh').and_return(false)
-        stub_data_bag(:ssh_keys).and_return({
-          :bob => [
+        stub_data_bag_item(:ssh_keys, 'bob').and_return({
+          :id => 'bob',
+          :keys => [
             {
               :id => 'bob_key',
               :pub => 'bob_public_key',
               :priv => 'bob_private_key'
             }
-          ],
-          :joe => [
+          ]
+        })
+        stub_data_bag_item(:ssh_keys, 'joe').and_return({
+          :id => 'joe',
+          :keys => [
             {
               :id => 'joe_key',
               :pub => 'joe_public_key',

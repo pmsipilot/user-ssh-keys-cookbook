@@ -5,8 +5,8 @@ node['ssh_keys']['users'].each do |username, user|
     username,
     user,
     node,
-    Proc.new do |name|
-      data_bag(name)
+    Proc.new do |name, item|
+      data_bag_item(name, item)
     end
   )
 
