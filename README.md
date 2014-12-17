@@ -21,6 +21,25 @@ Deploys SSH keys
 | `authorized_keys`   | Array      | `[]`       | Array of strings representing authorized SSH public keys              |
 | `authorized_users`  | Array      | `[]`       | Array of strings representing authorized users (found in the databag) |
 
+## LWRP
+
+This cookbook provides one resource:
+
+### `ssh_keys_key`
+
+```ruby
+ssh_keys_key 'john' do
+  authorized_keys [
+    'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDmz4D...',
+    'ssh-rsa sFE5JafGV4UmfxGP5/vpAAADWC8HcoQAyYT...'
+  ]
+  authorized_users %w(bob joe)
+end
+
+```
+
+This resource will add authorized keys from the provided list (`authorized_keys`) and from users declared in the databag (`bob` and `joe`) to the `john` user.
+
 ## Databag
 
 The databag is an `Hash` with usernames as keys. Each user can have a list of keypairs (as an `Array`).
