@@ -34,7 +34,7 @@ describe 'ssh-keys::default' do
         expect(chef_run.converge(described_recipe)).to create_directory('/home/bob/.ssh').with({
           :user => 'bob',
           :group => 'bob',
-          :mode => '0600'
+          :mode => '0700'
         })
       end
 
