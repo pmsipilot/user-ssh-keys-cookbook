@@ -1,6 +1,6 @@
-# ssh-keys-cookbook
+# ssh-keys-cookbook [![Build Status](https://travis-ci.org/pmsipilot/ssh-keys-cookbook.svg?branch=master)](https://travis-ci.org/pmsipilot/ssh-keys-cookbook)
 
-Deploys SSH keys
+Deploys SSH keys and authorized keys
 
 ## Supported Platforms
 
