@@ -17,7 +17,7 @@ action :create do
   directory "#{user[:home]}/.ssh" do
     owner username
     group username
-    mode '0600'
+    mode '0700'
     action :create
 
     not_if "test -e #{user[:home]}/.ssh"
