@@ -16,10 +16,10 @@ Deploys SSH keys
 
 ### Users
 
-| Key                 | Type       | Default    | Description                                                           |
-| :------------------ |:---------- | :--------- | :-------------------------------------------------------------------- |
-| `authorized_keys`   | Array      | `[]`       | Array of strings representing authorized SSH public keys              |
-| `authorized_users`  | Array      | `[]`       | Array of strings representing authorized users (found in the databag) |
+| Key                 | Type       | Default    | Description                                                                       |
+| :------------------ |:---------- | :--------- | :-------------------------------------------------------------------------------- |
+| `authorized_keys`   | Array      | `[]`       | Array of strings representing authorized SSH public keys                          |
+| `authorized_users`  | Array      | `[]`       | Array of strings representing authorized users (found in the [databag](#databag)) |
 
 ## LWRP
 
@@ -52,6 +52,13 @@ A keypais is described as follow:
 | `pub`  | String | `nil`   | Private key content        |
 
 ## Usage
+
+You can use this cookbook in tow ways:
+
+* using the [`default`](#ssh-keys-default) recipe and providing (attributes)[#attributes]
+* using the [LWRP](#lwrp) 
+
+Both methods require you to define a [databag](#databag) to define SSH key pairs.
 
 ### ssh-keys::default
 
