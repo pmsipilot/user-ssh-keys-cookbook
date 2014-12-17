@@ -55,10 +55,10 @@ A keypais is described as follow:
 
 You can use this cookbook in tow ways:
 
-* using the [`default`](#ssh-keys-default) recipe and providing (attributes)[#attributes]
+* using the [default](#ssh-keys-default) recipe and providing (attributes)[#attributes]
 * using the [LWRP](#lwrp) 
 
-Both methods require you to define a [databag](#databag) to define SSH key pairs.
+Both methods require you to define a [databag](#databag) to define SSH key pairs. Defining attributes is not required if you only want to use the LWRP.
 
 ### ssh-keys::default
 
