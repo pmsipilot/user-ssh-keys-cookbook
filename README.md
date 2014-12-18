@@ -1,4 +1,4 @@
-# ssh-keys-cookbook [![Build Status](https://travis-ci.org/pmsipilot/ssh-keys-cookbook.svg?branch=master)](https://travis-ci.org/pmsipilot/ssh-keys-cookbook)
+# user-ssh-keys-cookbook [![Build Status](https://travis-ci.org/pmsipilot/user-ssh-keys-cookbook.svg?branch=master)](https://travis-ci.org/pmsipilot/user-ssh-keys-cookbook)
 
 Deploys SSH keys and authorized keys
 
@@ -8,6 +8,8 @@ Deploys SSH keys and authorized keys
 * Debian 7
 
 ## Attributes
+
+The root key of all attributes is `user_ssh_keys`.
 
 | Key         | Type       | Default    | Description                                           |
 | :---------- |:---------- | :--------- | :---------------------------------------------------- |
@@ -25,10 +27,10 @@ Deploys SSH keys and authorized keys
 
 This cookbook provides one resource:
 
-### `ssh_keys_key`
+### `user_ssh_keys_key`
 
 ```ruby
-ssh_keys_key 'john' do
+user_ssh_keys_key 'john' do
   authorized_keys [
     'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDmz4D...',
     'ssh-rsa sFE5JafGV4UmfxGP5/vpAAADWC8HcoQAyYT...'
@@ -55,19 +57,19 @@ A keypais is described as follow:
 
 You can use this cookbook in tow ways:
 
-* using the [default](#ssh-keys-default) recipe and providing (attributes)[#attributes]
+* using the [default](#user-ssh-keys-default) recipe and providing (attributes)[#attributes]
 * using the [LWRP](#lwrp) 
 
 Both methods require you to define a [databag](#databag) to define SSH key pairs. Defining attributes is not required if you only want to use the LWRP.
 
-### ssh-keys::default
+### user-ssh-keys::default
 
-Include `ssh-keys` in your node's `run_list`:
+Include `user-ssh-keys` in your node's `run_list`:
 
 ```json
 {
   "run_list": [
-    "recipe[ssh-keys]"
+    "recipe[user-ssh-keys]"
   ]
 }
 ```

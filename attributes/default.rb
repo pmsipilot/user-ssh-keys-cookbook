@@ -1,2 +1,2 @@
-default['ssh_keys']['data_bag'] = 'ssh_keys'
-default['ssh_keys']['users'] = []
+default['user_ssh_keys']['data_bag'] = 'ssh_keys'
+default['user_ssh_keys']['users'] = []

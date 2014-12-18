@@ -1,4 +1,4 @@
-name             'ssh-keys'
+name             'user-ssh-keys'
 maintainer       'PMSIpilot'
 maintainer_email 'support@pmsipilot.com'
 license          'MIT'
