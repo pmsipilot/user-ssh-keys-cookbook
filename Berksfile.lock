@@ -4,4 +4,4 @@ DEPENDENCIES
     metadata: true
 
 GRAPH
-  user-ssh-keys (1.0.0)
+  user-ssh-keys (1.0.2)
