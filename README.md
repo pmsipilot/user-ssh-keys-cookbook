@@ -62,6 +62,19 @@ You can use this cookbook in two ways:
 
 Both methods require you to define a [databag](#databag) to define SSH key pairs. Defining attributes is not required if you only want to use the LWRP.
 
+Note that the user whose keys you wish to populate must already exist,
+and *also* have a databag entry.  That is, if you have:
+
+```ruby
+user_ssh_keys_key 'root' do
+  authorized_users %w(bob)
+  data_bag 'keys'
+  action :create
+end
+```
+
+then you must have a databag entry for both "bob" *and* "root".
+
 ### user-ssh-keys::default
 
 Include `user-ssh-keys` in your node's `run_list`:
