@@ -44,8 +44,8 @@ This resource will add authorized keys from the provided list (`authorized_keys`
 
 ## Databag
 
-The databag is an `Hash` with usernames as keys. Each user can have a list of keypairs (as an `Array`).
-A keypais is described as follow:
+The databag is a `Hash` with usernames as keys. Each user can have a list of keypairs (as an `Array`).
+A keypair is described as follow:
 
 | Key    | Type   | Default | Description                |
 | :------|:------ | :------ | :------------------------- |
@@ -55,7 +55,7 @@ A keypais is described as follow:
 
 ## Usage
 
-You can use this cookbook in tow ways:
+You can use this cookbook in two ways:
 
 * using the [default](#user-ssh-keys-default) recipe and providing (attributes)[#attributes]
 * using the [LWRP](#lwrp) 
