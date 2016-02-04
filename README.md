@@ -90,8 +90,9 @@ Include `user-ssh-keys` in your node's `run_list`:
 #### Example databag
 
 ```json
-{    
-    "bob": [
+{
+    "id": "bob",
+    "keys": [
         {
             "id": "my_key",
             "pub": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDmz4D...",
