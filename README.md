@@ -44,8 +44,8 @@ This resource will add authorized keys from the provided list (`authorized_keys`
 
 ## Databag
 
-The databag is an `Hash` with usernames as keys. Each user can have a list of keypairs (as an `Array`).
-A keypais is described as follow:
+The databag is a `Hash` with usernames as keys. Each user can have a list of keypairs (as an `Array`).
+A keypair is described as follow:
 
 | Key    | Type   | Default | Description                |
 | :------|:------ | :------ | :------------------------- |
@@ -55,12 +55,25 @@ A keypais is described as follow:
 
 ## Usage
 
-You can use this cookbook in tow ways:
+You can use this cookbook in two ways:
 
 * using the [default](#user-ssh-keys-default) recipe and providing (attributes)[#attributes]
 * using the [LWRP](#lwrp) 
 
 Both methods require you to define a [databag](#databag) to define SSH key pairs. Defining attributes is not required if you only want to use the LWRP.
+
+Note that the user whose keys you wish to populate must already exist,
+and *also* have a databag entry.  That is, if you have:
+
+```ruby
+user_ssh_keys_key 'root' do
+  authorized_users %w(bob)
+  data_bag 'keys'
+  action :create
+end
+```
+
+then you must have a databag entry for both "bob" *and* "root".
 
 ### user-ssh-keys::default
 
@@ -77,8 +90,9 @@ Include `user-ssh-keys` in your node's `run_list`:
 #### Example databag
 
 ```json
-{    
-    "bob": [
+{
+    "id": "bob",
+    "keys": [
         {
             "id": "my_key",
             "pub": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDmz4D...",
