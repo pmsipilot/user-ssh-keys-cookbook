@@ -9,7 +9,7 @@ module PMSIpilot
 
           true
         rescue
-          raise Chef::Exceptions::ConfigurationError, "User #{user} does not exist"
+          raise Chef::Exceptions::ConfigurationError, "User #{username} does not exist"
         end
       end
 
