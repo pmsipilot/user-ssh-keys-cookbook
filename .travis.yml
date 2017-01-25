@@ -4,3 +4,6 @@ rvm:
   - 2.1.0
 
 bundler_args: --jobs 7
+
+scripts: foodcritic . --epic-fail any && bundle exec rspec
+
