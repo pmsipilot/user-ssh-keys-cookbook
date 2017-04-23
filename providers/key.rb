@@ -6,8 +6,8 @@ action :create do
   user = PMSIpilot::SshKeys::User.normalize!(
       username,
       {
-          :authorized_keys => new_resource.authorized_keys,
-          :authorized_users => new_resource.authorized_users
+          :authorized_keys => new_resource.authorized_keys.dup,
+          :authorized_users => new_resource.authorized_users.dup
       },
       Proc.new do |item|
         data_bag_item(new_resource.data_bag, item)
