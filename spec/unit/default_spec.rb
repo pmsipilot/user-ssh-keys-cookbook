@@ -298,5 +298,66 @@ describe 'user-ssh-keys::default' do
         expect(chef_run.converge(described_recipe)).to render_file('/home/bob/.ssh/authorized_keys').with_content("joe_public_key\njoe_other_public_key")
       end
     end
+
+    describe 'With multiple users' do
+      it 'Should install correct public keys' do
+        allow(Dir).to receive(:home) { '/home/bob' }
+        stub_command('test -e /home/bob/.ssh').and_return(false)
+        allow(Dir).to receive(:home) { '/home/bob' }
+        stub_command('test -e /home/bob/.ssh').and_return(false)
+
+        stub_data_bag_item(:ssh_keys, 'bob').and_return({
+          :id => 'bob',
+          :keys => [
+            {
+              :id => 'bob_key',
+              :pub => 'bob_public_key',
+              :priv => 'bob_private_key'
+            }
+          ]
+                                                        })
+        stub_data_bag_item(:ssh_keys, 'joe').and_return({
+          :id => 'joe',
+          :keys => [
+            {
+              :id => 'joe_key',
+              :pub => 'joe_public_key',
+              :priv => 'joe_private_key'
+            }
+          ]
+                                                        })
+        stub_data_bag_item(:ssh_keys, 'foo').and_return({
+          :id => 'foo',
+          :keys => [
+            {
+              :id => 'foo_key',
+              :pub => 'foo_public_key',
+              :priv => 'foo_private_key'
+            }
+          ]
+                                                        })
+
+        chef_run = ChefSpec::SoloRunner.new(step_into: ['user_ssh_keys_key']) do |node|
+          node.set['user_ssh_keys'] = {
+            :users => {
+              :joe => {
+                :authorized_users => [
+                  'foo'
+                ]
+              },
+              :bob => {
+                :authorized_users => [
+                  'joe',
+                ]
+              }
+            }
+          }
+        end
+
+        subject = chef_run.converge(described_recipe)
+        expect(subject).to render_file('/home/bob/.ssh/authorized_keys').with_content("joe_public_key")
+        expect(subject).to_not render_file('/home/bob/.ssh/authorized_keys').with_content("foo_public_key")
+      end
+    end
   end
 end
